@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Computing Research Survival Kit - Buku Bacaan Riset Ilmiah</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Lora (Editorial Serif), Plus Jakarta Sans (Clean UI/Body), JetBrains Mono (Academic Code/Data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Lora', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ==================== TEMA KERTAS BUKU BACAAN ==================== */
+    :root {
+      --paper-bg: #fcfbf7;
+      --paper-border: #e6dfce;
+      --paper-text: #1e293b;
+      --paper-muted: #596780;
+      --paper-box: #f4eee1;
+      --paper-box-border: #dfd4bf;
+      --spine-shadow-left: linear-gradient(to left, rgba(0,0,0,0.11) 0%, rgba(0,0,0,0.03) 50%, rgba(0,0,0,0) 100%);
+      --spine-shadow-right: linear-gradient(to right, rgba(0,0,0,0.11) 0%, rgba(0,0,0,0.03) 50%, rgba(0,0,0,0) 100%);
+      --page-curl-shadow: rgba(0,0,0,0.22);
+    }
+
+    body.theme-white {
+      --paper-bg: #ffffff;
+      --paper-border: #e2e8f0;
+      --paper-text: #0f172a;
+      --paper-muted: #64748b;
+      --paper-box: #f8fafc;
+      --paper-box-border: #cbd5e1;
+      --spine-shadow-left: linear-gradient(to left, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0) 100%);
+      --spine-shadow-right: linear-gradient(to right, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0) 100%);
+    }
+
+    body.theme-cream {
+      --paper-bg: #fcfbf7;
+      --paper-border: #e6dfce;
+      --paper-text: #1e293b;
+      --paper-muted: #596780;
+      --paper-box: #f4eee1;
+      --paper-box-border: #dfd4bf;
+    }
+
+    body.theme-sepia {
+      --paper-bg: #f4ecd8;
+      --paper-border: #dccdb0;
+      --paper-text: #37291a;
+      --paper-muted: #735d45;
+      --paper-box: #ede0c4;
+      --paper-box-border: #d2bc90;
+      --spine-shadow-left: linear-gradient(to left, rgba(60,35,10,0.14) 0%, rgba(60,35,10,0.03) 50%, rgba(0,0,0,0) 100%);
+      --spine-shadow-right: linear-gradient(to right, rgba(60,35,10,0.14) 0%, rgba(60,35,10,0.03) 50%, rgba(0,0,0,0) 100%);
+    }
+
+    body.theme-dark {
+      --paper-bg: #181a20;
+      --paper-border: #2c313d;
+      --paper-text: #e2e8f0;
+      --paper-muted: #94a3b8;
+      --paper-box: #21252f;
+      --paper-box-border: #383f4e;
+      --spine-shadow-left: linear-gradient(to left, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 50%, rgba(0,0,0,0) 100%);
+      --spine-shadow-right: linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 50%, rgba(0,0,0,0) 100%);
+      --page-curl-shadow: rgba(0,0,0,0.6);
+    }
+
+    /* Ambient Meja Belajar */
+    .desk-bg {
+      background: radial-gradient(circle at 50% 20%, #1e2430 0%, #111319 75%, #0a0b0e 100%);
+    }
+
+    /* Bodi Buku Fisik 3D */
+    .book-wrapper {
+      perspective: 2600px;
+      perspective-origin: 50% 50%;
+    }
+
+    .book-chassis {
+      box-shadow: 
+        0 25px 60px -15px rgba(0, 0, 0, 0.8),
+        0 12px 30px -8px rgba(0, 0, 0, 0.6),
+        0 0 0 2px rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      position: relative;
+    }
+
+    /* Tumpukan Lembaran Kertas Fisik di Pinggir */
+    .book-page-stack-left {
+      box-shadow: 
+        -3px 3px 0 #ded6c4,
+        -6px 6px 0 #cac0aa,
+        -9px 9px 0 #b6ab92,
+        -14px 14px 22px rgba(0,0,0,0.45);
+    }
+    .book-page-stack-right {
+      box-shadow: 
+        3px 3px 0 #ded6c4,
+        6px 6px 0 #cac0aa,
+        9px 9px 0 #b6ab92,
+        14px 14px 22px rgba(0,0,0,0.45);
+    }
+
+    body.theme-dark .book-page-stack-left {
+      box-shadow: 
+        -3px 3px 0 #262b35,
+        -6px 6px 0 #1e222a,
+        -9px 9px 0 #161920,
+        -14px 14px 22px rgba(0,0,0,0.85);
+    }
+    body.theme-dark .book-page-stack-right {
+      box-shadow: 
+        3px 3px 0 #262b35,
+        6px 6px 0 #1e222a,
+        9px 9px 0 #161920,
+        14px 14px 22px rgba(0,0,0,0.85);
+    }
+
+    /* Lekukan Jilid Tengah */
+    .gutter-spine-left {
+      background: var(--spine-shadow-left);
+    }
+    .gutter-spine-right {
+      background: var(--spine-shadow-right);
+    }
+
+    /* Kertas Bacaan */
+    .page-paper {
+      background-color: var(--paper-bg);
+      color: var(--paper-text);
+      border-color: var(--paper-border);
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .book-callout {
+      background-color: var(--paper-box);
+      border-color: var(--paper-box-border);
+    }
+
+    /* Drop Cap Artistik */
+    .drop-cap::first-letter {
+      font-family: 'Lora', Georgia, serif;
+      float: left;
+      font-size: 3.4rem;
+      line-height: 0.8;
+      padding-top: 4px;
+      padding-right: 10px;
+      padding-bottom: 2px;
+      font-weight: 700;
+      color: #b91c1c;
+    }
+    body.theme-dark .drop-cap::first-letter {
+      color: #f59e0b;
+    }
+
+    /* Lipatan Sudut Kertas Interaktif (Corner Curl) - Kompak & Tidak Menabrak Nomor Halaman */
+    .corner-curl-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, transparent 48%, var(--paper-box-border) 49%, var(--paper-bg) 54%, var(--paper-border) 100%);
+      box-shadow: -1.5px -1.5px 4px var(--page-curl-shadow);
+      cursor: pointer;
+      border-top-left-radius: 4px;
+      transition: all 0.2s ease;
+      z-index: 15;
+    }
+    .corner-curl-right:hover {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, transparent 48%, #f59e0b 50%, #fbbf24 58%, var(--paper-border) 100%);
+    }
+
+    .corner-curl-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(-135deg, transparent 48%, var(--paper-box-border) 49%, var(--paper-bg) 54%, var(--paper-border) 100%);
+      box-shadow: 1.5px -1.5px 4px var(--page-curl-shadow);
+      cursor: pointer;
+      border-top-right-radius: 4px;
+      transition: all 0.2s ease;
+      z-index: 15;
+    }
+    .corner-curl-left:hover {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(-135deg, transparent 48%, #f59e0b 50%, #fbbf24 58%, var(--paper-border) 100%);
+    }
+
+    /* Pita Bookmark Fisik (Pada Punggung Tengah Buku - Bebas Tabrakan Teks) */
+    .bookmark-ribbon {
+      width: 24px;
+      height: 60px;
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 35;
+      transition: transform 0.25s ease;
+      cursor: pointer;
+    }
+    .bookmark-ribbon:hover {
+      transform: translateX(-50%) translateY(8px);
+    }
+    .bookmark-ribbon::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 12px solid var(--paper-bg);
+    }
+
+    /* ==================== 3D REALISTIC PAGE TURN ANIMATION ==================== */
+    .flip-overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      z-index: 50;
+      transform-style: preserve-3d;
+      pointer-events: none;
+      display: none;
+    }
+
+    /* Membalik ke halaman selanjutnya (Right to Left) */
+    .flip-next-leaf {
+      right: 0;
+      transform-origin: left center;
+      animation: flipNextAnim 0.85s cubic-bezier(0.25, 0.1, 0.25, 1.0) forwards;
+    }
+    @keyframes flipNextAnim {
+      0% {
+        transform: rotateY(0deg) skewY(0deg);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        filter: brightness(1);
+      }
+      20% {
+        transform: rotateY(-30deg) skewY(-0.5deg);
+        box-shadow: -8px 5px 20px rgba(0,0,0,0.15);
+        filter: brightness(0.97);
+      }
+      50% {
+        transform: rotateY(-90deg) skewY(-1deg);
+        box-shadow: -28px 12px 50px rgba(0,0,0,0.38);
+        filter: brightness(0.88);
+      }
+      80% {
+        transform: rotateY(-150deg) skewY(-0.3deg);
+        box-shadow: -6px 4px 15px rgba(0,0,0,0.12);
+        filter: brightness(0.96);
+      }
+      100% {
+        transform: rotateY(-180deg) skewY(0deg);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        filter: brightness(1);
+      }
+    }
+
+    /* Membalik ke halaman sebelumnya (Left to Right) */
+    .flip-prev-leaf {
+      left: 0;
+      transform-origin: right center;
+      animation: flipPrevAnim 0.85s cubic-bezier(0.25, 0.1, 0.25, 1.0) forwards;
+    }
+    @keyframes flipPrevAnim {
+      0% {
+        transform: rotateY(0deg) skewY(0deg);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        filter: brightness(1);
+      }
+      20% {
+        transform: rotateY(30deg) skewY(0.5deg);
+        box-shadow: 8px 5px 20px rgba(0,0,0,0.15);
+        filter: brightness(0.97);
+      }
+      50% {
+        transform: rotateY(90deg) skewY(1deg);
+        box-shadow: 28px 12px 50px rgba(0,0,0,0.38);
+        filter: brightness(0.88);
+      }
+      80% {
+        transform: rotateY(150deg) skewY(0.3deg);
+        box-shadow: 6px 4px 15px rgba(0,0,0,0.12);
+        filter: brightness(0.96);
+      }
+      100% {
+        transform: rotateY(180deg) skewY(0deg);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        filter: brightness(1);
+      }
+    }
+
+    /* Muka depan dan belakang lembaran pembalik */
+    .flip-face-front, .flip-face-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: var(--paper-bg);
+      padding: 2.5rem;
+      border: 1px solid var(--paper-border);
+    }
+    .flip-face-back {
+      transform: rotateY(180deg);
+      border-right: 1px solid var(--paper-border);
+    }
+
+    /* Scrollbar Halus Ramah Bacaan */
+    .page-scroller::-webkit-scrollbar {
+      width: 5px;
+    }
+    .page-scroller::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .page-scroller::-webkit-scrollbar-thumb {
+      background: rgba(140, 140, 140, 0.3);
+      border-radius: 9999px;
+    }
+    .page-scroller::-webkit-scrollbar-thumb:hover {
+      background: rgba(140, 140, 140, 0.55);
+    }
+
+    /* Animasi Lembut Saat Isi Terganti */
+    .content-fade {
+      animation: contentReveal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes contentReveal {
+      from { opacity: 0.1; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Print styling */
+    @media print {
+      body { background: white !important; padding: 0 !important; }
+      .no-print { display: none !important; }
+      .book-chassis { box-shadow: none !important; border: none !important; }
+      .page-paper { display: block !important; page-break-after: always; height: auto !important; }
+    }
+  </style>
+</head>
+<body class="desk-bg min-h-screen text-slate-800 font-sans flex flex-col justify-between p-2 sm:p-4 md:p-6 select-text transition-colors duration-300 theme-cream">
+
+  <!-- ==================== TOP NAVIGATION CONTROLLER ==================== -->
+  <header class="w-full max-w-6xl mx-auto mb-3 sm:mb-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-2xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-white shadow-2xl z-40 no-print">
+    
+    <!-- Title & Table of Contents Toggle -->
+    <div class="flex items-center gap-3">
+      <button onclick="toggleTOC()" class="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 rounded-xl text-xs font-semibold tracking-wide transition shadow-sm" title="Buka Daftar Isi">
+        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+        </svg>
+        <span>Daftar Isi</span>
+      </button>
+
+      <div class="hidden md:block">
+        <h1 class="text-xs font-serif font-bold tracking-wide text-slate-100">The Computing Research Survival Kit</h1>
+        <p class="text-[10px] text-slate-400 font-mono">Buku Pegangan Skripsi, Tesis &amp; Publikasi Ilmiah</p>
+      </div>
+    </div>
+
+    <!-- Font Sizer & Theme Chooser -->
+    <div class="flex items-center flex-wrap gap-2">
+      <!-- Font Size Adjuster -->
+      <div class="flex items-center bg-slate-800/80 border border-slate-700 rounded-xl px-1">
+        <button onclick="changeFontSize(-1)" class="px-2 py-1 text-xs text-slate-300 hover:text-white font-mono font-bold" title="Kecilkan Font">A-</button>
+        <span class="text-[10px] text-slate-400 px-1 font-mono">Ukuran</span>
+        <button onclick="changeFontSize(1)" class="px-2 py-1 text-xs text-slate-300 hover:text-white font-mono font-bold" title="Besarkan Font">A+</button>
+      </div>
+
+      <!-- Paper Theme Picker -->
+      <div class="flex items-center bg-slate-800/80 border border-slate-700 rounded-xl p-1 gap-1">
+        <button onclick="setPaperTheme('cream')" class="w-5 h-5 rounded-full bg-[#fcfbf7] border border-amber-300 shadow-sm" title="Kertas Klasik (Cream)"></button>
+        <button onclick="setPaperTheme('white')" class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow-sm" title="Kertas Putih"></button>
+        <button onclick="setPaperTheme('sepia')" class="w-5 h-5 rounded-full bg-[#f4ecd8] border border-amber-600 shadow-sm" title="Kertas Sepia Vintage"></button>
+        <button onclick="setPaperTheme('dark')" class="w-5 h-5 rounded-full bg-[#181a20] border border-slate-600 shadow-sm" title="Mode Malam"></button>
+      </div>
+
+      <!-- Audio Page Flip Sound Toggle -->
+      <button id="btnSound" onclick="toggleSound()" class="p-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-300 transition" title="Suara Membuka Kertas">
+        <svg id="soundIcon" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+        </svg>
+      </button>
+
+      <!-- Bookmark button -->
+      <button onclick="bookmarkCurrentPage()" class="p-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-amber-400 transition" title="Tandai Halaman Ini">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN PHYSICAL BOOK CONTAINER ==================== -->
+  <main class="w-full max-w-6xl mx-auto flex-1 flex flex-col justify-center relative my-auto book-wrapper">
+    
+    <!-- Ribbon Bookmark (Interactive) -->
+    <div onclick="bookmarkCurrentPage()" class="bookmark-ribbon hidden sm:block" title="Klik untuk pasang pembatas buku"></div>
+
+    <!-- BOOK BODY CHASSIS -->
+    <div class="book-chassis bg-[#1c1613] p-1.5 sm:p-3 rounded-2xl transition-all duration-300 relative">
+      
+      <!-- SPREAD VIEWPORT (Holds Left and Right Page or Single Page) -->
+      <div id="bookSpread" class="flex flex-col lg:flex-row w-full min-h-[580px] lg:h-[620px] max-h-[80vh] rounded-xl overflow-hidden relative">
+        
+        <!-- 3D FLIPPING LEAF OVERLAY (For Page Turn Animation) -->
+        <div id="flipOverlay" class="flip-overlay">
+          <div id="flipFaceFront" class="flip-face-front"></div>
+          <div id="flipFaceBack" class="flip-face-back"></div>
+        </div>
+
+        <!-- ==================== LEFT PAGE (VERSO) ==================== -->
+        <div id="leftPageContainer" class="page-paper book-page-stack-left flex-1 border-r border-slate-200/40 relative flex flex-col justify-between p-5 sm:p-7 lg:py-7 lg:pl-8 lg:pr-10 transition-all duration-200">
+          <!-- Center spine gutter shadow (right side of left page) -->
+          <div class="hidden lg:block absolute top-0 bottom-0 right-0 w-8 pointer-events-none gutter-spine-left z-20"></div>
+
+          <!-- Left Corner Curl (for clicking back) -->
+          <div class="corner-curl-left hidden lg:block no-print" onclick="turnPage(-1)" title="Klik untuk membalik ke halaman sebelumnya"></div>
+
+          <!-- Left Page Header (Running Header) -->
+          <div class="border-b border-dashed border-slate-300/60 pb-2 mb-3 flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-slate-400 no-print flex-shrink-0 pr-4">
+            <span id="leftRunningTitle">The Computing Research Survival Kit</span>
+            <span id="leftChapterBadge" class="text-amber-600 font-bold">Prolog</span>
+          </div>
+
+          <!-- Left Page Dynamic Scrollable Content (No Truncation) -->
+          <div id="leftContentArea" class="page-scroller flex-1 overflow-y-auto pr-1.5 space-y-3.5 text-[13.5px] leading-relaxed pb-3">
+            <!-- Diisi melalui JavaScript -->
+          </div>
+
+          <!-- Left Page Footer Folio (pl-10 mencegah tabrakan dengan lipatan sudut kiri) -->
+          <div class="pt-2.5 mt-2 border-t border-dashed border-slate-300/60 flex items-center justify-between text-xs font-serif text-slate-400 no-print flex-shrink-0 pl-10 pr-2">
+            <span id="leftFolioNumber" class="font-mono text-[11px] font-semibold text-slate-500 dark:text-slate-400">— 1 —</span>
+            <span class="text-[10px] tracking-wider italic font-serif">Kajian Metodologis Dr. Romi Satria Wahono</span>
+          </div>
+        </div>
+
+        <!-- ==================== RIGHT PAGE (RECTO) ==================== -->
+        <div id="rightPageContainer" class="page-paper book-page-stack-right flex-1 border-l border-slate-200/40 relative flex flex-col justify-between p-5 sm:p-7 lg:py-7 lg:pl-10 lg:pr-8 transition-all duration-200">
+          <!-- Center spine gutter shadow (left side of right page) -->
+          <div class="hidden lg:block absolute top-0 bottom-0 left-0 w-8 pointer-events-none gutter-spine-right z-20"></div>
+
+          <!-- Right Corner Curl (for clicking next) -->
+          <div class="corner-curl-right hidden lg:block no-print" onclick="turnPage(1)" title="Klik untuk membalik ke halaman berikutnya"></div>
+
+          <!-- Right Page Header (Running Header) -->
+          <div class="border-b border-dashed border-slate-300/60 pb-2 mb-3 flex items-center justify-between text-[11px] font-mono uppercase tracking-widest text-slate-400 no-print flex-shrink-0 pl-4">
+            <span id="rightChapterBadge" class="text-sky-600 font-bold">Bab I</span>
+            <span id="rightRunningTitle">Hakikat Software & Kontribusi</span>
+          </div>
+
+          <!-- Right Page Dynamic Scrollable Content (No Truncation) -->
+          <div id="rightContentArea" class="page-scroller flex-1 overflow-y-auto pr-1.5 space-y-3.5 text-[13.5px] leading-relaxed pb-3">
+            <!-- Diisi melalui JavaScript -->
+          </div>
+
+          <!-- Right Page Footer Folio (pr-10 mencegah tabrakan dengan lipatan sudut kanan) -->
+          <div class="pt-2.5 mt-2 border-t border-dashed border-slate-300/60 flex items-center justify-between text-xs font-serif text-slate-400 no-print flex-shrink-0 pl-2 pr-10">
+            <span class="text-[10px] tracking-wider italic font-serif">The Computing Research Survival Kit</span>
+            <span id="rightFolioNumber" class="font-mono text-[11px] font-semibold text-slate-500 dark:text-slate-400">— 2 —</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== BOTTOM PAGE TURNING BAR ==================== -->
+    <div class="mt-3 sm:mt-4 flex items-center justify-between gap-4 px-2 no-print">
+      
+      <!-- Prev Button -->
+      <button id="btnPrevPage" onclick="turnPage(-1)" class="px-4 py-2 bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold tracking-wide transition flex items-center gap-2 shadow-lg disabled:opacity-30 disabled:cursor-not-allowed">
+        <span>Halaman Sebelumnya</span>
+      </button>
+
+      <!-- Reading Progress Slider & Page Info -->
+      <div class="flex-1 max-w-md hidden sm:flex flex-col items-center gap-1">
+        <div class="flex items-center justify-between w-full text-[11px] font-mono text-slate-400">
+          <span id="pageProgressText">Halaman 1 - 2 dari 16</span>
+          <span id="readingPercentText" class="text-amber-400 font-bold">12% Dibaca</span>
+        </div>
+        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden border border-slate-700">
+          <div id="readingProgressBar" class="bg-gradient-to-r from-amber-500 to-sky-500 h-full w-1/5 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Next Button -->
+      <button id="btnNextPage" onclick="turnPage(1)" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 active:scale-95 text-slate-950 font-bold rounded-xl text-xs tracking-wide transition shadow-lg hover:shadow-amber-500/20 disabled:opacity-30 disabled:cursor-not-allowed">
+        <span>Halaman Selanjutnya</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ==================== TABLE OF CONTENTS (DRAWER SLIDE-OVER) ==================== -->
+  <div id="tocDrawer" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none flex justify-start no-print">
+    <div class="w-full max-w-md bg-[#181a20] text-slate-200 h-full border-r border-slate-800 shadow-2xl flex flex-col justify-between p-6 transform -translate-x-full transition-transform duration-300 ease-out" id="tocPanel">
+      
+      <!-- TOC Header -->
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-serif font-bold text-base">§</span>
+            <div>
+              <h2 class="text-sm font-bold font-serif text-white tracking-wide">Daftar Isi Buku</h2>
+              <p class="text-[10px] font-mono text-slate-400">Survival Kit Penelitian Computing</p>
+            </div>
+          </div>
+          <button onclick="toggleTOC()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 text-sm font-mono">✕</button>
+        </div>
+
+        <!-- TOC Items -->
+        <nav class="mt-6 space-y-1 overflow-y-auto max-h-[65vh] pr-2 page-scroller">
+          <button onclick="jumpToSpread(0)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-amber-400 block">BAGIAN DEPAN</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-amber-300">Sampul Buku & Manifesto Riset</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 1-2</span>
+          </button>
+
+          <button onclick="jumpToSpread(1)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-sky-400 block">BAB I</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-sky-300">Hakikat Software & Kontribusi Ilmiah (Mitos 1 & 2)</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 3-4</span>
+          </button>
+
+          <button onclick="jumpToSpread(2)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-sky-400 block">BAB II</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-sky-300">Metodologi Riset vs SDLC (Mitos 3 & 4)</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 5-6</span>
+          </button>
+
+          <button onclick="jumpToSpread(3)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-sky-400 block">BAB III</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-sky-300">Studi Literatur & Beban Bacaan (Mitos 5 & 6)</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 7-8</span>
+          </button>
+
+          <button onclick="jumpToSpread(4)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-sky-400 block">BAB IV</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-sky-300">Skala Riset & Kedalaman Kajian (Mitos 7 & 8)</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 9-10</span>
+          </button>
+
+          <button onclick="jumpToSpread(5)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-sky-400 block">BAB V</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-sky-300">Etika Sitasi, Turnitin & Publikasi (Mitos 9 & 10)</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 11-12</span>
+          </button>
+
+          <button onclick="jumpToSpread(6)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-emerald-400 block">BAB VI</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-emerald-300">Matriks Riset Computing & Blueprint Judul</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 13-14</span>
+          </button>
+
+          <button onclick="jumpToSpread(7)" class="w-full text-left p-3 rounded-xl hover:bg-slate-800/80 transition flex items-center justify-between group">
+            <div>
+              <span class="text-[10px] font-mono text-rose-400 block">EPILOG</span>
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-rose-300">Checklist Audit Kesiapan Sidang & Generator Pernyataan</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Hal. 15-16</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- TOC Footer -->
+      <div class="pt-4 border-t border-slate-800 text-[11px] text-slate-500 font-mono flex items-center justify-between">
+        <span>Gunakan keyboard: tombol panah kiri / kanan</span>
+        <span class="text-amber-400">Edisi Lengkap</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BOOKMARK NOTIFICATION TOAST ==================== -->
+  <div id="toastBookmark" class="fixed bottom-6 right-6 bg-slate-900 text-white border border-amber-500/40 px-4 py-3 rounded-2xl shadow-2xl z-50 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
+    <div class="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+      <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
+    </div>
+    <div>
+      <div class="text-xs font-bold font-serif" id="toastTitle">Pita Bookmark Tersimpan</div>
+      <div class="text-[11px] text-slate-400" id="toastDesc">Halaman saat ini telah dicatat.</div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC & CONTENT DATABASE ==================== -->
+  <script>
+    /*
+     * MASTER DATA BUKU BACAAN (16 Halaman Proporsional Tanpa Terpotong)
+     */
+    const bookPages = [
+      // ==================== HALAMAN 1: COVER BUKU DEPAN ====================
+      {
+        runningTitle: "The Computing Research Survival Kit",
+        chapterBadge: "SAMPUL DEPAN",
+        htmlContent: `
+          <div class="flex flex-col items-center justify-center text-center h-full py-4 min-h-[460px]">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-slate-950 flex items-center justify-center text-2xl font-serif font-black shadow-lg mb-4 border-2 border-amber-300">
+              §
+            </div>
+            
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-400/40 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase mb-3">
+              BUKU PANDUAN AKADEMIK
+            </div>
+
+            <h1 class="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
+              THE COMPUTING RESEARCH <br>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-rose-600 to-sky-600 dark:from-amber-400 dark:to-sky-400">SURVIVAL KIT</span>
+            </h1>
+
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-md font-serif italic leading-relaxed">
+              Dekonstruksi 10 Mitos Penelitian Computing yang Membuat Mahasiswa dan Dosen Gelisah Menuju Skripsi, Tesis, &amp; Publikasi Bereputasi.
+            </p>
+
+            <div class="w-20 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent my-4"></div>
+
+            <div class="w-full max-w-xs p-3 rounded-xl book-callout border text-left text-xs font-mono space-y-1">
+              <div class="flex justify-between text-slate-500 dark:text-slate-400 text-[10px]">
+                <span>RUJUKAN KAJIAN:</span>
+                <span class="text-amber-600 dark:text-amber-400 font-bold">DR. ROMI SATRIA WAHONO</span>
+              </div>
+              <div class="flex justify-between text-slate-500 dark:text-slate-400 text-[10px]">
+                <span>FRAMEWORK METODE:</span>
+                <span class="font-semibold text-slate-700 dark:text-slate-300">DAWSON RESEARCH MODEL</span>
+              </div>
+              <div class="flex justify-between text-slate-500 dark:text-slate-400 text-[10px]">
+                <span>TARGET PEMBACA:</span>
+                <span class="font-semibold text-slate-700 dark:text-slate-300">MAHASISWA &amp; DOSEN IT</span>
+              </div>
+            </div>
+
+            <button onclick="turnPage(1)" class="mt-5 px-5 py-2 bg-slate-900 hover:bg-slate-800 text-amber-300 rounded-xl text-xs font-serif font-bold tracking-wider transition shadow-md">
+              Mulai Membuka Buku
+            </button>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 2: PROLOG & MANIFESTO ====================
+      {
+        runningTitle: "Manifesto Riset Komputasi",
+        chapterBadge: "PROLOG",
+        htmlContent: `
+          <div class="space-y-3">
+            <h2 class="text-lg sm:text-xl font-serif font-bold text-slate-900 dark:text-white border-b pb-2">
+              Manifesto Riset Komputasi
+            </h2>
+
+            <div class="p-3 rounded-xl bg-amber-500/10 border-l-4 border-amber-600 text-slate-800 dark:text-slate-200">
+              <p class="font-serif italic text-xs leading-relaxed">
+                "Pusing saat membaca paper bukan karena Anda kebanyakan membaca, melainkan karena Anda belum cukup banyak membaca hingga menemukan benang merahnya."
+              </p>
+              <div class="mt-1 text-right text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400">
+                — Dr. Romi Satria Wahono, M.Eng., Ph.D.
+              </div>
+            </div>
+
+            <p class="drop-cap text-slate-700 dark:text-slate-300 text-xs sm:text-[13px] leading-relaxed text-justify">
+              Banyak mahasiswa tingkat akhir di bidang Ilmu Komputer, Teknik Informatika, dan Sistem Informasi terjebak dalam kebingungan berkepanjangan. Mereka mengira menyusun skripsi berarti harus membuat sistem informasi dengan ribuan baris kode program.
+            </p>
+
+            <p class="text-slate-700 dark:text-slate-300 text-xs sm:text-[13px] leading-relaxed text-justify">
+              Padahal di hadapan dewan penguji ilmiah, naskah tersebut kerap dinyatakan <strong>tidak memiliki kontribusi ilmiah</strong> karena hanya mengulang pekerjaan proyek tukang tanpa ada pengujian hipotesis algoritma.
+            </p>
+
+            <div class="book-callout border rounded-xl p-3 space-y-1.5">
+              <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                3 Aturan Emas Riset Computing:
+              </h3>
+              <ul class="text-xs space-y-1.5 text-slate-700 dark:text-slate-300 list-disc list-inside leading-relaxed">
+                <li><strong>Software adalah Testbed:</strong> Kode hanyalah wahana penguji untuk mengukur metode usulan.</li>
+                <li><strong>Knowledge First:</strong> Sasaran utama adalah kontribusi ilmu pengetahuan (*contribution to knowledge*), bukan langsung aksi sosial.</li>
+                <li><strong>Paper-Driven Problem:</strong> Masalah digali dari kelemahan paper jurnal, bukan keluhan tempat magang.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 3: BAB I - MITOS #01 ====================
+      {
+        runningTitle: "Bab I • Hakikat Software",
+        chapterBadge: "BAB I",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #01
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:03:06]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Skripsi Sarjana Computing Wajib Bikin Software Utuh"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Meyakini kelulusan ditentukan oleh banyaknya menu CRUD, keindahan CSS, modul login, dan tebalnya cetak kode program.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Pada paper jurnal terindeks Scopus Q1/Q2, tidak pernah ada halaman berisi tangkapan layar UI atau baris kode program. Software di ranah akademik hanya berstatus sebagai <strong>testbed</strong> (alat uji eksperimental) guna mengukur apakah metode usulan Anda lebih akurat atau lebih cepat.
+              </p>
+              <p>
+                Di ranah <em>Software Engineering</em> pun, riset berfokus pada inovasi metodologi pemodelan, efisiensi estimasi ukuran software (seperti <em>Fuzzy Use Case Points</em>), atau pengujian otomatis.
+              </p>
+            </div>
+
+            <!-- Interaktif: Komparasi Proyek vs Riset -->
+            <div class="book-callout border rounded-xl p-2.5">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[11px] font-mono font-bold text-slate-700 dark:text-slate-200">Komparasi Cepat:</span>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 font-mono">Beda Mendasar</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-[11px]">
+                <div class="p-2 bg-rose-500/10 rounded border border-rose-500/20">
+                  <span class="text-rose-600 font-bold block">Tukang Coding:</span>
+                  <p class="text-slate-600 dark:text-slate-400 text-[10px]">Tujuan: Aplikasi jadi dan jalan sesuai pesanan klien.</p>
+                </div>
+                <div class="p-2 bg-emerald-500/10 rounded border border-emerald-500/20">
+                  <span class="text-emerald-600 font-bold block">Peneliti Computing:</span>
+                  <p class="text-slate-600 dark:text-slate-400 text-[10px]">Tujuan: Menguji performa metode dengan metrik terukur.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2 bg-amber-500/15 border border-amber-500/30 rounded-xl text-xs text-amber-800 dark:text-amber-300">
+              <strong>Survival Hack:</strong> Bila modifikasi algoritma Anda dapat dibuktikan validasinya lewat lembar analitis Excel atau skrip Colab sederhana, hal itu sudah <strong>sah secara ilmiah.</strong>
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 4: BAB I - MITOS #02 ====================
+      {
+        runningTitle: "Bab I • Kontribusi Pengetahuan",
+        chapterBadge: "BAB I",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #02
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:13:15]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Tujuan Riset Wajib Berdampak Langsung ke Masyarakat"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Menuliskan tujuan skripsi: <em>"Membantu meningkatkan omset UMKM Toko Berkah 20%"</em> atau <em>"Mempermudah absensi RT"</em>.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Sasaran utama riset ilmiah adalah <strong>Contribution to Knowledge</strong> (kontribusi terhadap khazanah ilmu pengetahuan), bukan <em>Contribution to People</em>.
+              </p>
+              <p>
+                Dampak ke masyarakat adalah manfaat turunan yang tidak diuji dalam variabel model komputasi Anda. Bila Anda menulis tujuan "menaikkan omset", Anda wajib menguji korelasi statistik omset selama berbulan-bulan (itu ranah ilmu bisnis, bukan computing!).
+              </p>
+            </div>
+
+            <!-- Interaktif: Toggle Kasus Proposal -->
+            <div class="book-callout border rounded-xl p-3 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">Struktur Bab 1 yang Lolos Reviewer:</span>
+                <button onclick="toggleCardExample('boxBab1Tujuan')" class="text-[10px] text-amber-600 dark:text-amber-400 font-mono font-bold underline">Ubah Contoh</button>
+              </div>
+
+              <div id="boxBab1Tujuan" class="space-y-1.5 text-xs">
+                <div class="p-2 bg-white dark:bg-slate-800 rounded border">
+                  <strong class="text-sky-600 dark:text-sky-400 block font-mono text-[11px]">Sub-Bab 1.4: TUJUAN PENELITIAN (Wajib Diukur)</strong>
+                  <p class="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5">
+                    "Meningkatkan akurasi klasifikasi algoritma SVM dengan seleksi fitur PSO pada dataset kanker payudara."
+                  </p>
+                </div>
+                <div class="p-2 bg-white dark:bg-slate-800 rounded border">
+                  <strong class="text-emerald-600 dark:text-emerald-400 block font-mono text-[11px]">Sub-Bab 1.5: MANFAAT PENELITIAN (Dampak Tidak Langsung)</strong>
+                  <p class="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5">
+                    "Menjadi referensi pendukung bagi tenaga medis dalam diagnosa dini tumor."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2 bg-sky-500/15 border border-sky-500/30 rounded-xl text-xs text-sky-800 dark:text-sky-300">
+              <strong>Kaidah Emas:</strong> Tujuan Penelitian = Variabel yang dihitung angkanya di Bab 4. Jangan menjanjikan hal yang tidak Anda ukur!
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 5: BAB II - MITOS #03 ====================
+      {
+        runningTitle: "Bab II • Metodologi Riset vs SDLC",
+        chapterBadge: "BAB II",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #03
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:34:52]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Waterfall atau Agile Adalah Metode Penelitian di Bab 3"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Mengisi Bab 3 dengan diagram SDLC: Analisis Kebutuhan → Desain Sistem → Koding → Testing → Deployment.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Waterfall, RAD, dan Agile adalah <strong>Metodologi Pengembangan Software (SDLC)</strong>, bukan metode penelitian ilmiah! SDLC diciptakan untuk memproduksi software komersial, bukan membuktikan hipotesis ilmiah.
+              </p>
+              <p>
+                Menurut pakar metodologi <strong>Christian W. Dawson</strong>, riset computing terbagi menjadi 4 jalur ilmiah:
+              </p>
+            </div>
+
+            <!-- Dawson 4 Framework Grid -->
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div class="p-2 bg-white dark:bg-slate-800 rounded-lg border border-sky-400/40">
+                <span class="text-sky-600 dark:text-sky-400 font-bold block text-[11px]">1. EKSPERIMEN</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Uji algoritma pada dataset benchmark standar.</span>
+              </div>
+              <div class="p-2 bg-white dark:bg-slate-800 rounded-lg border border-amber-400/40">
+                <span class="text-amber-600 dark:text-amber-400 font-bold block text-[11px]">2. ACTION RESEARCH</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Intervensi langsung perbaikan proses di instansi.</span>
+              </div>
+              <div class="p-2 bg-white dark:bg-slate-800 rounded-lg border border-emerald-400/40">
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold block text-[11px]">3. STUDI KASUS</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Eksplorasi mendalam pada konteks sistem spesifik.</span>
+              </div>
+              <div class="p-2 bg-white dark:bg-slate-800 rounded-lg border border-purple-400/40">
+                <span class="text-purple-600 dark:text-purple-400 font-bold block text-[11px]">4. SURVEI EMPIRIS</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Kuesioner adopsi teknologi (TAM, UTAUT).</span>
+              </div>
+            </div>
+
+            <div class="book-callout border rounded-xl p-2.5 text-xs text-slate-700 dark:text-slate-300">
+              <strong>Komponen Utama Bab 3:</strong> Dataset Acuan → Tahap Preprocessing → Desain Algoritma Usulan → Skenario Pengujian (K-Fold Cross Validation) → Metrik Evaluasi (Akurasi, F1, RMSE).
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 6: BAB II - MITOS #04 ====================
+      {
+        runningTitle: "Bab II • Sumber Masalah Riset",
+        chapterBadge: "BAB II",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #04
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:42:49]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Mencari Masalah Penelitian di Tempat Magang / Toko"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Datang ke kelurahan atau tempat magang lalu bertanya: <em>"Pak, apa masalah di sini yang bisa saya buatkan web-nya?"</em>
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Antrean kasir atau nota manual adalah <strong>masalah operasional kehidupan nyata</strong>, bukan <em>Research Problem</em>. Masalah riset komputasi digali dari <strong>kelemahan metode pada paper jurnal terkini</strong>.
+              </p>
+              <p>
+                Rumusan masalah computing dilarang memakai kata tanya <em>"How to"</em> (Bagaimana cara membuat...), melainkan menguji signifikansi perbaikan (<em>What / How much</em>).
+              </p>
+            </div>
+
+            <!-- Anatomi Bab 1 Alur Masalah -->
+            <div class="bg-slate-900 text-slate-200 rounded-xl p-3 font-mono text-xs border border-slate-700 space-y-1.5">
+              <div class="text-amber-400 font-bold text-[11px]">ALUR ANATOMI BAB 1 (Logika Masalah):</div>
+              <div class="text-[10px] space-y-1">
+                <div><span class="text-emerald-400 font-bold">1. Masalah Riil:</span> Kerugian akibat penipuan transaksi kartu kredit.</div>
+                <div><span class="text-sky-400 font-bold">2. Metode Dasar:</span> Dideteksi memakai Random Forest.</div>
+                <div><span class="text-rose-400 font-bold">3. Research Gap:</span> Random Forest anjlok bila kelas data imbalanced.</div>
+                <div><span class="text-amber-400 font-bold">4. Metode Usulan:</span> Integrasi SMOTE untuk balancing data.</div>
+              </div>
+            </div>
+
+            <div class="book-callout border rounded-xl p-2.5 text-xs">
+              <div class="font-bold text-slate-800 dark:text-slate-200 font-mono text-[11px]">Formula Judul Riset Ilmiah:</div>
+              <code class="block mt-0.5 p-1 bg-white dark:bg-slate-800 rounded border font-mono text-[10px] text-sky-700 dark:text-sky-300">
+                [Metode Usulan] + [Solusi Celah] + [Metode Dasar] + [Objek Data]
+              </code>
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 7: BAB III - MITOS #05 ====================
+      {
+        runningTitle: "Bab III • Studi Literatur",
+        chapterBadge: "BAB III",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #05
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:50:42]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Bab 2 Berisi Kumpulan Definisi Teori dari Buku Teks"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Menjejali Bab 2 dengan definisi: "PHP adalah...", "MySQL adalah...", "Basis data adalah...".
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Menyalin definisi kamus menjadi pemicu skor tinggi Turnitin (bisa tembus 50%). Bab 2 adalah <strong>Critical & In-Depth Evaluation</strong> terhadap penelitian sebelumnya guna memetakan <em>State-of-the-Art</em> dan celah riset (<em>Research Gap</em>).
+              </p>
+            </div>
+
+            <!-- Tabel Sintesis Paper yang Benar -->
+            <div class="book-callout border rounded-xl p-2.5 space-y-1.5">
+              <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase">
+                Format Tabel Sintesis Paper (Bab 2):
+              </span>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-[10px] font-mono">
+                  <thead class="bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <tr>
+                      <th class="p-1 border-b">Peneliti</th>
+                      <th class="p-1 border-b">Metode</th>
+                      <th class="p-1 border-b text-rose-600">Kelemahan / Gap</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y text-slate-600 dark:text-slate-300">
+                    <tr>
+                      <td class="p-1">Zhang (2023)</td>
+                      <td class="p-1">CNN Klasik</td>
+                      <td class="p-1 text-rose-600">Overfitting pada citra resolusi rendah</td>
+                    </tr>
+                    <tr>
+                      <td class="p-1">Mansoor (2024)</td>
+                      <td class="p-1">ResNet-50</td>
+                      <td class="p-1 text-rose-600">Waktu komputasi sangat berat</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="p-2 bg-amber-500/15 border border-amber-500/30 rounded-xl text-xs text-amber-800 dark:text-amber-300">
+              <strong>Rasio Rujukan Pustaka:</strong> <strong>80% Jurnal Mutakhir</strong> (terbit 5 tahun terakhir) dan <strong>20% Buku Referensi Metodologi</strong>.
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 8: BAB III - MITOS #06 ====================
+      {
+        runningTitle: "Bab III • Beban Membaca Paper",
+        chapterBadge: "BAB III",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #06
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:54:10]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Makin Banyak Membaca Paper, Pikiran Makin Pusing"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Membaca 3-5 paper acak, lalu merasa frustasi karena istilah bahasa Inggris terasa rumit dipahami.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Anda pusing bukan karena kebanyakan membaca, melainkan karena <strong>jumlah bacaan belum melampaui ambang batas (Threshold of Saturation)</strong> pada topik yang fokus.
+              </p>
+              <p>
+                Saat Anda konsisten membaca 20-30 paper pada satu topik yang sama, polanya akan tampak jelas: penelitinya orang yang sama, metodenya berulang, dan celahnya tampak nyata.
+              </p>
+            </div>
+
+            <!-- Piramida Ambang Batas Paper -->
+            <div class="book-callout border rounded-xl p-2.5 space-y-1.5 font-mono text-xs">
+              <div class="font-bold text-slate-800 dark:text-slate-200 text-[11px] uppercase">
+                Ambang Batas Kuantitas Paper per Jenjang:
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between p-1.5 bg-sky-500/10 rounded border border-sky-500/20 text-[11px]">
+                  <span class="text-sky-700 dark:text-sky-400 font-bold">S1 (Skripsi)</span>
+                  <span class="font-bold">20 – 70 Paper Jurnal</span>
+                </div>
+                <div class="flex justify-between p-1.5 bg-amber-500/10 rounded border border-amber-500/20 text-[11px]">
+                  <span class="text-amber-700 dark:text-amber-400 font-bold">S2 (Tesis)</span>
+                  <span class="font-bold">70 – 200 Paper Jurnal</span>
+                </div>
+                <div class="flex justify-between p-1.5 bg-rose-500/10 rounded border border-rose-500/20 text-[11px]">
+                  <span class="text-rose-700 dark:text-rose-400 font-bold">S3 (Disertasi)</span>
+                  <span class="font-bold">200 – 700 Paper Jurnal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-xs text-emerald-800 dark:text-emerald-300">
+              <strong>Metode Baca 3-Pass:</strong> Pass 1: Judul & Abstrak. Pass 2: Grafik & Skema Alur. Pass 3: Detail rumus & eksperimen.
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 9: BAB IV - MITOS #07 ====================
+      {
+        runningTitle: "Bab IV • Skala Penelitian",
+        chapterBadge: "BAB IV",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #07
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [00:56:44]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Riset Computing Harus Sangat Raksasa dan Aplikatif"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Berpikir bahwa judul skripsi harus mencakup sistem se-Indonesia tanpa ada modifikasi metode komputasi.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Riset yang hanya menerapkan metode lama ke objek/tempat berbeda tanpa modifikasi dijuluki <em>"Penelitian Tukang Jahit"</em>. Riset semacam ini tidak bernilai ilmiah tinggi.
+              </p>
+              <p>
+                Riset computing kelas dunia mengusung prinsip <strong>Small But High Impact</strong> (skup permasalahan sangat spesifik, namun modifikasi metodenya berdampak signifikan).
+              </p>
+            </div>
+
+            <!-- Bukti Pohon Keputusan -->
+            <div class="book-callout border rounded-xl p-2.5 space-y-1 font-mono text-xs">
+              <div class="font-bold text-amber-700 dark:text-amber-400 text-[11px]">
+                Studi Kasus: Evolusi Algoritma Decision Tree
+              </div>
+              <p class="text-[10.5px] text-slate-600 dark:text-slate-300 font-sans">
+                Peneliti dunia memenangkan penghargaan bukan karena gonta-ganti tempat riset, melainkan hanya memperbaiki satu baris rumus pemisahan simpul:
+              </p>
+              <div class="text-[10px] bg-white dark:bg-slate-900 p-2 rounded border space-y-0.5">
+                <div>1. Breiman (1984) → Menemukan <strong>Gini Index</strong>.</div>
+                <div>2. Quinlan (1993) → Menjadi <strong>Gain Ratio</strong> (C4.5).</div>
+                <div>3. Abellán (2005) → <strong>Imprecise Info Gain</strong>.</div>
+              </div>
+            </div>
+
+            <div class="p-2 bg-amber-500/15 border border-amber-500/30 rounded-xl text-xs text-amber-800 dark:text-amber-300">
+              <strong>Pesan Kunci:</strong> Jangan habiskan tenaga membuat sistem raksasa yang rapuh. Fokuslah pada perbaikan algoritma secara mendalam!
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 10: BAB IV - MITOS #08 ====================
+      {
+        runningTitle: "Bab IV • Kedalaman Kajian",
+        chapterBadge: "BAB IV",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #08
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [01:01:04]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Peneliti Harus Generalis & Menguasai Semua Hal IT"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Berusaha menggabungkan semua tren teknologi sekaligus: Blockchain + IoT + Deep Learning + Cloud + VR.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Semakin tinggi jenjang pendidikan, kajian bergerak dari <em>Broad and Shallow</em> (luas tapi dangkal di S1) menuju <strong>Narrow and Deep</strong> (sangat spesifik dan mendalam di S2 dan S3).
+              </p>
+              <p>
+                Seorang master dan doktor diakui kepakarannya karena berhasil mendorong batas terluar pengetahuan manusia meski hanya <strong>1 milimeter</strong> pada satu titik yang amat spesifik.
+              </p>
+            </div>
+
+            <!-- Interaktif: Perbandingan Pola Pikir -->
+            <div class="book-callout border rounded-xl p-2.5 space-y-1.5">
+              <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase">Komparasi Pendekatan Riset:</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2 bg-rose-500/10 border border-rose-500/20 rounded">
+                  <span class="text-rose-600 font-bold block text-[10px]">Mahasiswa Keliru:</span>
+                  <p class="text-[10px] text-slate-600 dark:text-slate-300">"Mau bikin robot AI serbaguna yang bisa semua hal di pertanian."</p>
+                </div>
+                <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                  <span class="text-emerald-600 font-bold block text-[10px]">Peneliti Fokus:</span>
+                  <p class="text-[10px] text-slate-600 dark:text-slate-300">"Optimasi loss function YOLOv8 untuk hama ukuran sub-pixel."</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2 bg-sky-500/15 border border-sky-500/30 rounded-xl text-xs text-sky-800 dark:text-sky-300">
+              <strong>Kunci Lulus Sidang:</strong> Beranilah menyempitkan judul Anda. Topik yang sempit dan fokus jauh lebih mudah dipertahankan dan lulus!
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 11: BAB V - MITOS #09 ====================
+      {
+        runningTitle: "Bab V • Etika Sitasi & Turnitin",
+        chapterBadge: "BAB V",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #09
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [01:03:23]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Boleh Copy-Paste Kalimat Asal Dicantumkan Sitasi"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Menyalin paragraf mentah tanpa tanda kutip, lalu merasa aman hanya dengan menambahkan tanda kurung <em>(Wahono, 2024)</em> di akhir.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Menyalin susunan kalimat kata per kata secara identik tanpa tanda kutip langsung tetap merupakan <strong>Plagiarisme Langsung (Direct Plagiarism)</strong>. Turnitin akan menandainya merah penuh.
+              </p>
+              <p>
+                Sitasi yang sah wajib melalui <strong>Parafrase Akademis</strong>: menuliskan kembali intisari pemikiran tersebut menggunakan struktur bahasa Anda sendiri.
+              </p>
+            </div>
+
+            <!-- Interaktif: Simulator Turnitin Slider -->
+            <div class="book-callout border rounded-xl p-3 space-y-2">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="font-bold text-slate-800 dark:text-slate-200">Uji Parameter Turnitin Similarity:</span>
+                <span id="turnitinScoreBadge" class="px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-600">6% Aman</span>
+              </div>
+              <input type="range" min="0" max="100" value="10" id="turnitinSlider" oninput="simTurnitin(this.value)" class="w-full accent-amber-600 cursor-pointer">
+              <p id="turnitinAnalysis" class="text-[11px] text-slate-600 dark:text-slate-400 italic">
+                Tingkat Parafrase Tinggi: Naskah aman dari peringatan plagiasi dewan penguji.
+              </p>
+            </div>
+
+            <div class="p-2 bg-amber-500/15 border border-amber-500/30 rounded-xl text-xs text-amber-800 dark:text-amber-300">
+              <strong>Prinsip Sitasi:</strong> Jangan menulis <em>"Menurut X dalam Y"</em>. Carilah selalu dokumen primer aslinya!
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 12: BAB V - MITOS #10 ====================
+      {
+        runningTitle: "Bab V • Integritas Publikasi",
+        chapterBadge: "BAB V",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 border-b pb-1.5">
+              <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-400 text-[10px] font-mono font-bold rounded">
+                MITOS #10
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">Timestamp [01:06:07]</span>
+            </div>
+
+            <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+              "Satu Hasil Eksperimen Boleh Dipecah ke Banyak Jurnal"
+            </h2>
+
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <strong>Kekeliruan Umum:</strong> Satu eksperimen dipecah menjadi 3 paper dengan hanya mengganti sedikit parameter agar cepat memenuhi syarat kelulusan.
+            </div>
+
+            <div class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <p>
+                <strong>Fakta Ilmiah:</strong> Memecah data riset tanpa kontribusi substansial baru dikenal sebagai <strong>Salami Slicing</strong>. Mengirim naskah serupa ke banyak jurnal disebut <strong>Duplicate Publication</strong>.
+              </p>
+              <p>
+                Keduanya adalah pelanggaran etika publikasi berat yang berujung sanksi penarikan artikel (<em>retraction</em>) dan blacklist dari publisher internasional (IEEE, Elsevier, Springer).
+              </p>
+            </div>
+
+            <!-- Prinsip Integritas -->
+            <div class="book-callout border rounded-xl p-3 space-y-1.5 text-xs">
+              <div class="font-bold text-slate-800 dark:text-slate-200 font-mono text-[11px] uppercase">
+                Prinsip Utama: One Contribution, One Paper
+              </div>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed text-[11px]">
+                <li>Satukan eksperimen dan validasi ke dalam satu naskah berbobot tinggi.</li>
+                <li>Tolak jurnal predator yang memungut biaya tanpa proses review ketat.</li>
+                <li>Bagikan skrip uji coba dan dataset di repositori terbuka (GitHub/Zenodo).</li>
+              </ul>
+            </div>
+
+            <div class="p-2 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-xs text-emerald-800 dark:text-emerald-300">
+              <strong>Etika Peneliti:</strong> Satu paper berkualitas di jurnal bereputasi jauh lebih berharga daripada sepuluh paper daur ulang di prosiding abal-abal!
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 13: BAB VI - MATRIKS CAPAIAN ====================
+      {
+        runningTitle: "Bab VI • Matriks Riset Computing",
+        chapterBadge: "BAB VI",
+        htmlContent: `
+          <div class="space-y-3">
+            <h2 class="text-lg sm:text-xl font-serif font-bold text-slate-900 dark:text-white border-b pb-1.5">
+              Matriks Riset Computing
+            </h2>
+
+            <p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify">
+              Mengetahui posisi jenjang studi Anda menghindarkan Anda dari sindrom "over-expectation" (merasa S1 harus menemukan teori baru) atau "under-expectation" (tesis S2 hanya membuat web).
+            </p>
+
+            <!-- Tabel Matriks Jenjang Proporsional -->
+            <div class="overflow-x-auto border rounded-xl shadow-sm">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-200/60 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-mono text-[10.5px]">
+                  <tr>
+                    <th class="p-2 border-b">Jenjang</th>
+                    <th class="p-2 border-b">Fokus Riset</th>
+                    <th class="p-2 border-b">Ekspektasi Penguji</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y text-slate-600 dark:text-slate-300 text-[10.5px]">
+                  <tr>
+                    <td class="p-2 font-bold font-mono text-slate-900 dark:text-white">D3/D4</td>
+                    <td class="p-2 font-semibold text-sky-700 dark:text-sky-400">Penguasaan Teknis</td>
+                    <td class="p-2">Membangun software utuh, rapi, bebas joki.</td>
+                  </tr>
+                  <tr class="bg-amber-500/10">
+                    <td class="p-2 font-bold font-mono text-amber-800 dark:text-amber-300">S1</td>
+                    <td class="p-2 font-semibold text-amber-700 dark:text-amber-400">Pengujian Metode</td>
+                    <td class="p-2">Menguji akurasi algoritma pada dataset standar.</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 font-bold font-mono text-slate-900 dark:text-white">S2</td>
+                    <td class="p-2 font-semibold text-purple-700 dark:text-purple-400">Perbaikan Metode</td>
+                    <td class="p-2">Modifikasi algoritma (tweak parameter, seleksi fitur).</td>
+                  </tr>
+                  <tr class="bg-rose-500/10">
+                    <td class="p-2 font-bold font-mono text-rose-800 dark:text-rose-300">S3</td>
+                    <td class="p-2 font-semibold text-rose-700 dark:text-rose-400">Invensi Teori Baru</td>
+                    <td class="p-2">Menemukan formula orisinal yang menembus batas ilmu.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="book-callout border rounded-xl p-3 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+              <span class="font-bold font-mono text-amber-700 dark:text-amber-400 block text-[11px]">
+                Catatan Penting Mahasiswa S1:
+              </span>
+              <p class="text-[11px]">
+                Sebagai mahasiswa S1, Anda <strong>TIDAK DITUNTUT</strong> menemukan algoritma baru dari nol! Tugas Anda adalah membuktikan bahwa Anda memahami cara menguji dan mengukur performa metode yang sudah ada secara ilmiah.
+              </p>
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 14: BAB VI - BLUEPRINT JUDUL ====================
+      {
+        runningTitle: "Bab VI • Blueprint Judul",
+        chapterBadge: "BAB VI",
+        htmlContent: `
+          <div class="space-y-3">
+            <h2 class="text-lg sm:text-xl font-serif font-bold text-slate-900 dark:text-white border-b pb-1.5">
+              Blueprint Perumusan Judul
+            </h2>
+
+            <p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify">
+              Judul riset computing wajib menyebutkan <strong>metode usulan</strong> dan <strong>metode pembanding</strong>, bukan nama toko atau kantor tempat mengambil data.
+            </p>
+
+            <!-- Interaktif: Judul Tester Simulator -->
+            <div class="book-callout border rounded-xl p-3 space-y-2">
+              <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+                Uji Kelayakan Struktur Judul Skripsi:
+              </div>
+              <div class="flex gap-1.5">
+                <input type="text" id="inputJudulTest" placeholder="Ketik draf judul skripsi Anda di sini..." class="flex-1 px-2.5 py-1.5 text-xs rounded-lg border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none focus:ring-1 focus:ring-amber-500">
+                <button onclick="testJudulSkripsi()" class="px-3 py-1.5 bg-amber-600 text-slate-950 font-bold rounded-lg text-xs font-mono">Cek</button>
+              </div>
+              <div id="hasilJudulTest" class="text-[11px] p-2 rounded bg-slate-100 dark:bg-slate-800 font-mono text-slate-600 dark:text-slate-300">
+                Masukkan judul atau klik contoh di bawah:
+              </div>
+              <div class="flex flex-wrap gap-1 text-[10px] font-mono">
+                <button onclick="presetJudul('lemah')" class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-700 dark:text-rose-300">Contoh Judul Ditolak</button>
+                <button onclick="presetJudul('kuat')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">Contoh Judul Diterima</button>
+              </div>
+            </div>
+
+            <!-- Rumus Baku -->
+            <div class="bg-slate-900 text-slate-200 rounded-xl p-2.5 font-mono text-xs border border-slate-700 space-y-1">
+              <div class="text-amber-400 font-bold text-[10.5px]">RUMUS BAKU JUDUL COMPUTING:</div>
+              <div class="p-1.5 bg-slate-800 rounded border border-slate-700 text-[10.5px] text-sky-300">
+                [Metode Solusi] + [Bentuk Perbaikan] + [Metode Dasar] + [Objek Data]
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 15: EPILOG - AUDIT CHECKLIST ====================
+      {
+        runningTitle: "Epilog • Audit Kesiapan Sidang",
+        chapterBadge: "EPILOG",
+        htmlContent: `
+          <div class="space-y-3">
+            <div class="border-b pb-1.5 flex items-center justify-between">
+              <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white">
+                Checklist Audit Kesiapan Sidang
+              </h2>
+              <span class="text-xs font-mono text-amber-600 font-bold">Self-Audit</span>
+            </div>
+
+            <!-- Score Box -->
+            <div class="book-callout border rounded-xl p-2.5 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wide">Status Kesiapan:</span>
+                <div id="readinessStatus" class="text-xs font-bold text-amber-600 dark:text-amber-400">
+                  Centang 7 poin di bawah ini
+                </div>
+              </div>
+              <div class="text-right">
+                <span id="checkCounter" class="text-lg sm:text-xl font-black font-mono text-slate-900 dark:text-white">0/7</span>
+                <span class="block text-[8px] font-mono text-slate-400 uppercase">Poin Sah</span>
+              </div>
+            </div>
+
+            <!-- Interactive Checklist Items (Tanpa Terpotong) -->
+            <div class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>Bebas Pertanyaan "How-To":</strong> Rumusan masalah menguji performa (What/Why/How much), bukan cara buat website.</div>
+              </label>
+
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>Bab 2 Bebas Definisi Kamus:</strong> Tidak ada definisi "PHP adalah...", melainkan tinjauan kritis State-of-the-Art.</div>
+              </label>
+
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>Bab 3 Bukan SDLC:</strong> Berisi tahapan eksperimen ilmiah (Dawson Framework), bukan Waterfall.</div>
+              </label>
+
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>Batas Ambang Paper Tercapai:</strong> Menelaah minimal 20 paper bereputasi 5 tahun terakhir pada satu topik.</div>
+              </label>
+
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>Parafrase Menyeluruh:</strong> Naskah bebas copy-paste dan bebas sitasi bertingkat ("A dalam B").</div>
+              </label>
+
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>Software Berstatus Testbed:</strong> Kode hanyalah instrumen penguji hipotesis eksperimen.</div>
+              </label>
+
+              <label class="flex items-start gap-2 p-2 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                <input type="checkbox" onchange="calcAuditScore()" class="audit-item mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-3.5 h-3.5">
+                <div class="text-[11px]"><strong>One Contribution, One Paper:</strong> Menolak praktik salami slicing dan publikasi ganda.</div>
+              </label>
+            </div>
+          </div>
+        `
+      },
+
+      // ==================== HALAMAN 16: EPILOG - SALAM KELULUSAN ====================
+      {
+        runningTitle: "Epilog • Salam Kelulusan",
+        chapterBadge: "EPILOG",
+        htmlContent: `
+          <div class="flex flex-col justify-between h-full space-y-3">
+            <div class="space-y-3">
+              <h2 class="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white border-b pb-1.5">
+                Surat Pernyataan Kesiapan Sidang
+              </h2>
+
+              <p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed text-justify">
+                Dengan menuntaskan pembacaan buku ini, Anda kini memiliki kompas yang jelas untuk menyusun karya ilmiah komputasi berstandar tinggi.
+              </p>
+
+              <!-- Sertifikat Kesiapan -->
+              <div class="p-4 border-2 border-dashed border-amber-600/40 rounded-2xl bg-amber-500/5 text-center space-y-2 relative overflow-hidden">
+                <div class="w-10 h-10 mx-auto rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center font-serif text-lg font-bold border border-amber-500/30">§</div>
+                <h3 class="text-xs sm:text-sm font-serif font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                  KOMITMEN INTEGRITAS RISET ILMIAH
+                </h3>
+                <p class="text-[11px] text-slate-600 dark:text-slate-300 max-w-sm mx-auto italic font-serif leading-relaxed">
+                  "Saya bertekad menyelesaikan penelitian skripsi/tesis saya dengan memegang teguh kaidah metodologis, menjunjung tinggi orisinalitas, dan menghasilkan kontribusi pengetahuan nyata bagi kemajuan ilmu komputasi."
+                </p>
+
+                <div class="pt-2 border-t border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                  <span>Status: Siap Sidang Skripsi</span>
+                  <span class="text-emerald-600 dark:text-emerald-400 font-bold">100% Anti-Mitos</span>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <button onclick="window.print()" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold font-mono transition flex items-center justify-center gap-2 shadow">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                  <span>Cetak / Simpan PDF</span>
+                </button>
+                <button onclick="jumpToSpread(0)" class="py-2 px-3 bg-amber-600 hover:bg-amber-500 text-slate-950 rounded-xl text-xs font-bold font-mono transition">
+                  Baca Ulang
+                </button>
+              </div>
+            </div>
+
+            <!-- Colophon Buku -->
+            <div class="pt-2 border-t border-dashed border-slate-300/60 text-[10px] font-mono text-slate-400 flex items-center justify-between">
+              <span>The Computing Research Survival Kit</span>
+              <span>Salam Sukses Sarjana!</span>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    /* ==================== READER STATE & CONTROLLERS ==================== */
+    let currentSpreadIndex = 0;
+    let isSpreadMode = true;
+    let currentTheme = 'cream';
+    let currentFontScale = 0;
+    let soundEnabled = true;
+    let isFlipping = false; // Mencegah spam klik saat animasi membalik
+
+    // Web Audio API: Suara Balik Kertas Lembut
+    let audioCtx = null;
+    function playPageTurnSound() {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+
+        // Fase 1: Gesekan Kertas
+        const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.15, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < noiseBuffer.length; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(900, now);
+        filter.frequency.exponentialRampToValueAtTime(300, now + 0.14);
+        filter.Q.setValueAtTime(2.5, now);
+
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.setValueAtTime(0.09, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+        whiteNoise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        whiteNoise.start(now);
+
+        // Fase 2: Dentuman Kertas Jatuh
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(110, now + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.18);
+
+        oscGain.gain.setValueAtTime(0.06, now + 0.08);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc.connect(oscGain);
+        oscGain.connect(audioCtx.destination);
+        osc.start(now + 0.08);
+        osc.stop(now + 0.19);
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      if (soundEnabled) {
+        icon.classList.remove('text-slate-500');
+        icon.classList.add('text-emerald-400');
+      } else {
+        icon.classList.remove('text-emerald-400');
+        icon.classList.add('text-slate-500');
+      }
+    }
+
+    function checkResponsiveLayout() {
+      // Selalu gunakan spread mode (2 halaman)
+      isSpreadMode = true;
+    }
+
+    // Render halaman statis
+    function renderBook() {
+      const totalPages = bookPages.length;
+      let leftIdx, rightIdx;
+
+      if (isSpreadMode) {
+        leftIdx = currentSpreadIndex * 2;
+        rightIdx = leftIdx + 1;
+      } else {
+        leftIdx = currentSpreadIndex;
+        rightIdx = null;
+      }
+
+      const leftContainer = document.getElementById('leftPageContainer');
+      const rightContainer = document.getElementById('rightPageContainer');
+      const leftContent = document.getElementById('leftContentArea');
+      const rightContent = document.getElementById('rightContentArea');
+
+      // Render Left Page
+      if (leftIdx < totalPages) {
+        const pLeft = bookPages[leftIdx];
+        document.getElementById('leftRunningTitle').innerText = pLeft.runningTitle;
+        document.getElementById('leftChapterBadge').innerText = pLeft.chapterBadge;
+        document.getElementById('leftFolioNumber').innerText = `— ${leftIdx + 1} —`;
+        leftContent.innerHTML = pLeft.htmlContent;
+        leftContainer.style.display = 'flex';
+        leftContent.classList.remove('content-fade');
+        void leftContent.offsetWidth;
+        leftContent.classList.add('content-fade');
+      }
+
+      // Render Right Page
+      if (isSpreadMode && rightIdx !== null) {
+        rightContainer.style.display = 'flex';
+        if (rightIdx < totalPages) {
+          const pRight = bookPages[rightIdx];
+          document.getElementById('rightRunningTitle').innerText = pRight.runningTitle;
+          document.getElementById('rightChapterBadge').innerText = pRight.chapterBadge;
+          document.getElementById('rightFolioNumber').innerText = `— ${rightIdx + 1} —`;
+          rightContent.innerHTML = pRight.htmlContent;
+        } else {
+          document.getElementById('rightRunningTitle').innerText = "Catatan";
+          document.getElementById('rightChapterBadge').innerText = "END";
+          document.getElementById('rightFolioNumber').innerText = `— ${rightIdx + 1} —`;
+          rightContent.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400">
+              <span class="text-3xl mb-2">❦</span>
+              <p class="font-serif italic text-xs">Akhir buku The Computing Research Survival Kit.</p>
+            </div>
+          `;
+        }
+        rightContent.classList.remove('content-fade');
+        void rightContent.offsetWidth;
+        rightContent.classList.add('content-fade');
+      } else {
+        rightContainer.style.display = 'none';
+      }
+
+      // Update Navigation Buttons & Progress
+      const totalSpreads = isSpreadMode ? Math.ceil(totalPages / 2) : totalPages;
+      document.getElementById('btnPrevPage').disabled = (currentSpreadIndex === 0);
+      document.getElementById('btnNextPage').disabled = (currentSpreadIndex >= totalSpreads - 1);
+
+      const displayCurrent = isSpreadMode ? Math.min(leftIdx + 2, totalPages) : leftIdx + 1;
+      const progressPercent = Math.round((displayCurrent / totalPages) * 100);
+      document.getElementById('pageProgressText').innerText = isSpreadMode 
+        ? `Halaman ${leftIdx + 1}${rightIdx < totalPages ? ' - ' + (rightIdx + 1) : ''} dari ${totalPages}`
+        : `Halaman ${leftIdx + 1} dari ${totalPages}`;
+      document.getElementById('readingPercentText').innerText = `${progressPercent}% Dibaca`;
+      document.getElementById('readingProgressBar').style.width = `${progressPercent}%`;
+
+      leftContent.scrollTop = 0;
+      if (rightContent) rightContent.scrollTop = 0;
+    }
+
+    // Animasi Membalik Halaman 3D Realistis
+    const FLIP_DURATION = 850; // ms, cocok dengan durasi CSS animation
+    const FLIP_MID_POINT = 380; // ms, saat lembaran mencapai tengah (sedikit lewat 50%)
+
+    function turnPage(direction) {
+      if (isFlipping) return;
+      const totalPages = bookPages.length;
+      const totalSpreads = Math.ceil(totalPages / 2);
+      const targetSpread = currentSpreadIndex + direction;
+
+      if (targetSpread < 0 || targetSpread >= totalSpreads) return;
+
+      // Jalankan suara balik kertas
+      playPageTurnSound();
+
+      // Flip 3D di desktop (selalu spread mode)
+      if (window.innerWidth >= 1024) {
+        isFlipping = true;
+        const flipOverlay = document.getElementById('flipOverlay');
+        const flipFront = document.getElementById('flipFaceFront');
+        const flipBack = document.getElementById('flipFaceBack');
+
+        if (direction === 1) {
+          // Membalik ke depan: halaman kanan melipat ke kiri
+          const curRightIdx = currentSpreadIndex * 2 + 1;
+          const nextLeftIdx = targetSpread * 2;
+
+          flipFront.innerHTML = (curRightIdx < totalPages) ? bookPages[curRightIdx].htmlContent : '';
+          flipBack.innerHTML = (nextLeftIdx < totalPages) ? bookPages[nextLeftIdx].htmlContent : '';
+
+          flipOverlay.className = 'flip-overlay flip-next-leaf';
+          flipOverlay.style.display = 'block';
+
+          // Update konten latar pada titik tengah animasi agar transisi terasa mulus
+          setTimeout(() => {
+            currentSpreadIndex = targetSpread;
+            renderBook();
+          }, FLIP_MID_POINT);
+
+          setTimeout(() => {
+            flipOverlay.style.display = 'none';
+            flipOverlay.className = 'flip-overlay';
+            isFlipping = false;
+          }, FLIP_DURATION + 20);
+
+        } else {
+          // Membalik ke belakang: halaman kiri melipat ke kanan
+          const curLeftIdx = currentSpreadIndex * 2;
+          const prevRightIdx = targetSpread * 2 + 1;
+
+          flipFront.innerHTML = (curLeftIdx < totalPages) ? bookPages[curLeftIdx].htmlContent : '';
+          flipBack.innerHTML = (prevRightIdx < totalPages) ? bookPages[prevRightIdx].htmlContent : '';
+
+          flipOverlay.className = 'flip-overlay flip-prev-leaf';
+          flipOverlay.style.display = 'block';
+
+          setTimeout(() => {
+            currentSpreadIndex = targetSpread;
+            renderBook();
+          }, FLIP_MID_POINT);
+
+          setTimeout(() => {
+            flipOverlay.style.display = 'none';
+            flipOverlay.className = 'flip-overlay';
+            isFlipping = false;
+          }, FLIP_DURATION + 20);
+        }
+      } else {
+        // Fallback untuk mobile
+        currentSpreadIndex = targetSpread;
+        renderBook();
+      }
+    }
+
+    function jumpToSpread(spreadIdx) {
+      if (isFlipping) return;
+      currentSpreadIndex = spreadIdx;
+      playPageTurnSound();
+      renderBook();
+      toggleTOC(false);
+    }
+
+    function setBookMode(mode, triggerRender = true) {
+      // Selalu paksa spread mode (2 halaman)
+      isSpreadMode = true;
+      if (triggerRender) renderBook();
+    }
+
+    function setPaperTheme(theme) {
+      currentTheme = theme;
+      document.body.classList.remove('theme-white', 'theme-cream', 'theme-sepia', 'theme-dark');
+      document.body.classList.add(`theme-${theme}`);
+      localStorage.setItem('metpen_theme', theme);
+    }
+
+    function changeFontSize(dir) {
+      currentFontScale = Math.max(-1, Math.min(2, currentFontScale + dir));
+      const leftContent = document.getElementById('leftContentArea');
+      const rightContent = document.getElementById('rightContentArea');
+
+      const fontSizes = ['text-[12.5px]', 'text-[13.5px]', 'text-[14.5px]', 'text-[15.5px]'];
+      const currentClass = fontSizes[currentFontScale + 1];
+
+      [leftContent, rightContent].forEach(el => {
+        if (el) {
+          el.classList.remove('text-[12.5px]', 'text-[13.5px]', 'text-[14.5px]', 'text-[15.5px]');
+          el.classList.add(currentClass);
+        }
+      });
+    }
+
+    function toggleTOC(forceState) {
+      const drawer = document.getElementById('tocDrawer');
+      const panel = document.getElementById('tocPanel');
+      const isOpen = drawer.classList.contains('opacity-100');
+      const shouldOpen = (forceState !== undefined) ? forceState : !isOpen;
+
+      if (shouldOpen) {
+        drawer.classList.remove('opacity-0', 'pointer-events-none');
+        drawer.classList.add('opacity-100', 'pointer-events-auto');
+        panel.classList.remove('-translate-x-full');
+      } else {
+        drawer.classList.add('opacity-0', 'pointer-events-none');
+        drawer.classList.remove('opacity-100', 'pointer-events-auto');
+        panel.classList.add('-translate-x-full');
+      }
+    }
+
+    function bookmarkCurrentPage() {
+      localStorage.setItem('metpen_bookmark_spread', currentSpreadIndex);
+      const toast = document.getElementById('toastBookmark');
+      const toastDesc = document.getElementById('toastDesc');
+      toastDesc.innerText = `Pembatas ditaruh pada bagian spread ke-${currentSpreadIndex + 1}.`;
+
+      toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // ==================== FITUR INTERAKTIF BUKU ====================
+
+    // 1. Toggle Kasus Nyata Bab 1
+    let exampleToggled = false;
+    function toggleCardExample(boxId) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      exampleToggled = !exampleToggled;
+      if (exampleToggled) {
+        box.innerHTML = `
+          <div class="p-2 bg-rose-500/10 rounded border border-rose-500/20">
+            <strong class="text-rose-600 block font-mono text-[11px]">CONTOH SALAH (Proyek Toko):</strong>
+            <p class="text-slate-700 dark:text-slate-300 text-[11px] mt-0.5">
+              "1.4 Tujuan: Membantu toko baju meningkatkan penjualan melalui website e-commerce."
+            </p>
+          </div>
+          <div class="p-2 bg-emerald-500/10 rounded border border-emerald-500/20">
+            <strong class="text-emerald-600 block font-mono text-[11px]">CONTOH BENAR (Riset Ilmiah):</strong>
+            <p class="text-slate-700 dark:text-slate-300 text-[11px] mt-0.5">
+              "1.4 Tujuan: Mengukur peningkatan F-measure algoritma Collaborative Filtering dengan penambahan algoritma K-Means pada rekomendasi produk e-commerce."
+            </p>
+          </div>
+        `;
+      } else {
+        box.innerHTML = `
+          <div class="p-2 bg-white dark:bg-slate-800 rounded border">
+            <strong class="text-sky-600 dark:text-sky-400 block font-mono text-[11px]">Sub-Bab 1.4: TUJUAN PENELITIAN (Wajib Diukur)</strong>
+            <p class="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5">
+              "Meningkatkan akurasi klasifikasi algoritma SVM dengan seleksi fitur PSO pada dataset kanker payudara."
+            </p>
+          </div>
+          <div class="p-2 bg-white dark:bg-slate-800 rounded border">
+            <strong class="text-emerald-600 dark:text-emerald-400 block font-mono text-[11px]">Sub-Bab 1.5: MANFAAT PENELITIAN (Dampak Tidak Langsung)</strong>
+            <p class="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5">
+              "Menjadi referensi pendukung bagi tenaga medis dalam diagnosa dini tumor."
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // 2. Simulator Turnitin (Bab V)
+    function simTurnitin(val) {
+      const badge = document.getElementById('turnitinScoreBadge');
+      const desc = document.getElementById('turnitinAnalysis');
+      if (!badge || !desc) return;
+
+      const score = Math.round(5 + (val * 0.65));
+      badge.innerText = `${score}% Similarity`;
+
+      if (score <= 20) {
+        badge.className = 'px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-600';
+        desc.innerText = 'Tingkat Parafrase Tinggi: Naskah aman dari peringatan plagiasi dewan penguji.';
+      } else if (score <= 35) {
+        badge.className = 'px-2 py-0.5 rounded font-bold bg-amber-500/20 text-amber-600';
+        desc.innerText = 'Peringatan: Banyak kutipan langsung terdeteksi. Wajib parafrase ulang Bab 2!';
+      } else {
+        badge.className = 'px-2 py-0.5 rounded font-bold bg-rose-500/20 text-rose-600';
+        desc.innerText = 'BAHAYA: Naskah otomatis ditolak sidang karena terindikasi plagiarisme langsung!';
+      }
+    }
+
+    // 3. Tester Kelayakan Judul Skripsi (Bab VI)
+    function testJudulSkripsi() {
+      const input = document.getElementById('inputJudulTest');
+      const hasil = document.getElementById('hasilJudulTest');
+      if (!input || !hasil) return;
+
+      const judul = input.value.trim().toLowerCase();
+      if (!judul) {
+        hasil.innerText = "Ketikkan draf judul skripsi Anda terlebih dahulu.";
+        hasil.className = "text-[11px] p-2 rounded bg-slate-100 dark:bg-slate-800 font-mono text-slate-500";
+        return;
+      }
+
+      if (judul.includes('rancang bangun') || judul.includes('sistem informasi') || judul.includes('berbasis web') || judul.includes('pada toko') || judul.includes('pada cv')) {
+        hasil.innerHTML = `
+          <strong class="text-rose-600 block">INDIKATOR REKAYASA BIASA (PROYEK TUKANG):</strong>
+          Judul mengandung frasa teknis biasa tanpa inovasi algoritma ("rancang bangun / berbasis web / pada toko"). Penguji akan menanyakan: "Apa kontribusi ilmiahnya?"
+        `;
+        hasil.className = "text-[11px] p-2 rounded bg-rose-500/10 border border-rose-500/30 font-mono text-rose-700 dark:text-rose-300";
+      } else if (judul.includes('akurasi') || judul.includes('optimasi') || judul.includes('klasifikasi') || judul.includes('prediksi') || judul.includes('penerapan') || judul.includes('algoritma')) {
+        hasil.innerHTML = `
+          <strong class="text-emerald-600 block">STRUKTUR RISET ILMIAH TERPENUHI:</strong>
+          Judul mencantumkan tujuan eksperimen komputasi dan metode yang dapat diuji signifikansi performanya!
+        `;
+        hasil.className = "text-[11px] p-2 rounded bg-emerald-500/10 border border-emerald-500/30 font-mono text-emerald-700 dark:text-emerald-300";
+      } else {
+        hasil.innerHTML = `
+          <strong class="text-amber-600 block">CATATAN PERBAIKAN FORMULA:</strong>
+          Pastikan menyebutkan metode usulan dan metode pembanding sesuai formula: [Metode Usulan] + [Bentuk Perbaikan] + [Metode Dasar].
+        `;
+        hasil.className = "text-[11px] p-2 rounded bg-amber-500/10 border border-amber-500/30 font-mono text-amber-700 dark:text-amber-300";
+      }
+    }
+
+    function presetJudul(type) {
+      const input = document.getElementById('inputJudulTest');
+      if (!input) return;
+      if (type === 'lemah') {
+        input.value = "Rancang Bangun Sistem Informasi Kasir Berbasis Web pada Toko Berkah";
+      } else {
+        input.value = "Peningkatan Akurasi Algoritma SVM Berbasis Seleksi Fitur PSO untuk Prediksi Penyakit Jantung";
+      }
+      testJudulSkripsi();
+    }
+
+    // 4. Checklist Kesiapan Sidang (Halaman 15)
+    function calcAuditScore() {
+      const items = document.querySelectorAll('.audit-item');
+      let count = 0;
+      items.forEach(it => { if (it.checked) count++; });
+
+      const counterEl = document.getElementById('checkCounter');
+      const statusEl = document.getElementById('readinessStatus');
+      if (counterEl) counterEl.innerText = `${count}/${items.length}`;
+
+      if (statusEl) {
+        if (count === 0) {
+          statusEl.innerText = "Centang 7 poin di bawah ini";
+          statusEl.className = "text-xs font-bold text-slate-500";
+        } else if (count < 4) {
+          statusEl.innerText = "Status: Belum Siap (Perlu Pembenahan Metodologi Serius)";
+          statusEl.className = "text-xs font-bold text-amber-600 dark:text-amber-400";
+        } else if (count < 7) {
+          statusEl.innerText = "Status: Hampir Memenuhi Standar (Lengkapi Sisa Poin)";
+          statusEl.className = "text-xs font-bold text-sky-600 dark:text-sky-400";
+        } else {
+          statusEl.innerText = "Status: Siap Sidang (Memenuhi Standar Kelulusan Ilmiah)";
+          statusEl.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400";
+        }
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') turnPage(1);
+      if (e.key === 'ArrowLeft') turnPage(-1);
+      if (e.key === 'Escape') toggleTOC(false);
+      if (e.key === 'Home') jumpToSpread(0);
+      if (e.key === 'End') jumpToSpread(Math.ceil(bookPages.length / 2) - 1);
+    });
+
+    // Touch Swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) turnPage(1);
+        else turnPage(-1);
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      // Spread mode selalu aktif; render ulang untuk menyesuaikan layout
+      renderBook();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkResponsiveLayout();
+      const savedTheme = localStorage.getItem('metpen_theme');
+      if (savedTheme) setPaperTheme(savedTheme);
+
+      const savedBookmark = localStorage.getItem('metpen_bookmark_spread');
+      if (savedBookmark !== null) {
+        currentSpreadIndex = parseInt(savedBookmark, 10);
+      }
+
+      renderBook();
+    });
+  </script>
+</body>
+</html>
